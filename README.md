@@ -30,3 +30,12 @@ Open [http://localhost:4000](http://localhost:4000) with your browser to lauch G
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the Next.js app.
 
 You can start editing the app by modifying `genkit-functions/src/lib/itineraryFlow.ts`, `src/app/gemini/page.tsx`. The page auto-updates as you edit the file.
+
+## Contributing
+
+Follow the [contributor workflow](AGENTS.md#contributor-workflow): 3-amigos
+ownership, small implementation handoffs, independent review, RED -> GREEN ->
+CLEAN checks, non-secret shared working notes, and small linked PR stacks.
+Verify authorized merges to `main` and keep task-owned worktrees clean. Report
+missing checks or access honestly, and keep private information out of this
+public repository.
