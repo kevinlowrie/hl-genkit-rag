@@ -30,3 +30,15 @@ Open [http://localhost:4000](http://localhost:4000) with your browser to lauch G
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the Next.js app.
 
 You can start editing the app by modifying `genkit-functions/src/lib/itineraryFlow.ts`, `src/app/gemini/page.tsx`. The page auto-updates as you edit the file.
+
+## Branch & hook policy
+
+This repository follows the [harmonized branch, hook & release policy](docs/dev-branch-policy.md).
+Local hooks run `scripts/hook_policy.py` — **FAST** profile on WIP/PR branches
+(fast commit/push loop), **FULL** profile on protected branches (`main`,
+`testing`, `freeze`, `release-candidate`, `release`, `prod`).
+
+```sh
+pre-commit install            # or: make hooks-install
+python3 scripts/hook_policy.py status
+```
