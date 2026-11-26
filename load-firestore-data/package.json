@@ -13,6 +13,6 @@
     "firebase-admin": "^12.2.0"
   },
   "devDependencies": {
-    "typescript": "^5.5.3"
+    "typescript": "^7.0.2"
   }
 }
