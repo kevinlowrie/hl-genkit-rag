@@ -16,32 +16,13 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
-
-import { Destination } from './gemini/types';
+import type { Destination } from './gemini/types';
 import { DESTINATIONS_LOCAL_STORAGE_KEY } from './constants';
+import { createLocalStorageStore } from './destinationStorage';
+
+const store = createLocalStorageStore<Destination[]>(DESTINATIONS_LOCAL_STORAGE_KEY);
 
 export default function useDestinations() {
-  const [destinations, setDestinations] = useState<
-    Destination[] | undefined | null
-  >();
-
-  useEffect(() => {
-    const localStorageDestination = localStorage.getItem(
-      DESTINATIONS_LOCAL_STORAGE_KEY,
-    );
-
-    try {
-      if (localStorageDestination) {
-        setDestinations(JSON.parse(localStorageDestination));
-        return;
-      }
-    } catch (e) {
-      // JSON.parse error, ignore and set destination null
-    }
-
-    setDestinations(null);
-  }, []);
-
+  const destinations = store.useValue();
   return { destinations };
 }
