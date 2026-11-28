@@ -17,21 +17,12 @@
 import { defineFirestoreRetriever } from '@genkit-ai/firebase';
 import { vertexAI } from '@genkit-ai/vertexai';
 
-import { getApp, initializeApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 
 import { Activity } from './types';
-import { ai, getProjectId } from './genkit.config';
+import { ai, firebaseApp } from './genkit.config';
 
-function getOrInitApp() {
-  try {
-    return getApp();
-  } catch (error) {}
-  return initializeApp({ projectId: getProjectId() });
-}
-
-const app = getOrInitApp();
-const firestore = getFirestore(app);
+const firestore = getFirestore(firebaseApp);
 
 /**
  * Returns activities linked with a known `placeId` using Firebase admin sdk for Firestore.
