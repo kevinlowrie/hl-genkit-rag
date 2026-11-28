@@ -42,3 +42,12 @@ Local hooks run `scripts/hook_policy.py` — **FAST** profile on WIP/PR branches
 pre-commit install            # or: make hooks-install
 python3 scripts/hook_policy.py status
 ```
+
+## Contributing
+
+Follow the [contributor workflow](AGENTS.md#contributor-workflow): 3-amigos
+ownership, small implementation handoffs, independent review, RED -> GREEN ->
+CLEAN checks, non-secret shared working notes, and small linked PR stacks.
+Verify authorized merges to `main` and keep task-owned worktrees clean. Report
+missing checks or access honestly, and keep private information out of this
+public repository.
