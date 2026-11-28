@@ -18,7 +18,11 @@ import clsx from 'clsx';
 import Image from 'next/image';
 
 import { Photo } from './svg';
-import { useImageUpload } from '@/lib/hooks/useImageUpload';
+import {
+  IMAGE_UPLOAD_ACCEPT,
+  MAX_UPLOAD_IMAGES,
+  useImageUpload,
+} from '@/lib/hooks/useImageUpload';
 
 export default function UploadImages() {
   const { uploadRef, uploadedImages, handleChange, handleClick } =
@@ -48,13 +52,14 @@ export default function UploadImages() {
       {/* Image upload element */}
       <div
         className={clsx('w-full flex flex-col items-center gap-3', {
-          hidden: uploadedImages.length === 3,
+          hidden: uploadedImages.length === MAX_UPLOAD_IMAGES,
         })}
       >
         <input
           type="file"
           ref={uploadRef}
           name="images[]"
+          accept={IMAGE_UPLOAD_ACCEPT}
           className="hidden"
           multiple
           onChange={handleChange}
