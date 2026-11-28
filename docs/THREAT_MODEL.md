@@ -12,7 +12,7 @@ Scope is the Next.js itinerary app, Genkit flow, Firestore access and local data
 1. Browser form → server action [itinerary.ts](../src/lib/itinerary.ts) → full-file base64 conversion → Genkit flow. Uploaded files and request text are untrusted.
 2. [itineraryFlow.ts](../src/lib/genkit/itineraryFlow.ts) passes request and retrieved metadata to a prompt/model and returns output to the UI. [Schemas](../src/lib/genkit/types.ts) constrain shape, not truth or authorization.
 3. [placesRetriever.ts](../src/lib/genkit/placesRetriever.ts) currently returns a `TODO` document. The real vector retriever is commented out, as is image-description generation in the flow. The activities helper uses Firebase Admin SDK. The intended complete RAG/image path is not implemented.
-4. [genkit.config.ts](../src/lib/genkit/genkit.config.ts) enables Firebase telemetry and configures Vertex AI with a placeholder project. Runtime credentials, model processing and telemetry cross service boundaries. Admin SDK access is governed by IAM, not client Firestore rules.
+4. [genkit.config.ts](../src/lib/genkit/genkit.config.ts) enables Firebase telemetry and configures Vertex AI using the runtime project configuration. When the project ID is unavailable, the SDKs use their own credential discovery. Runtime credentials, model processing and telemetry cross service boundaries. Admin SDK access is governed by IAM, not client Firestore rules.
 5. [Firestore rules](../firestore.rules) allow public activities/places reads and public creates in two trace collections. Data loading is a privileged operator action, not a safe fixture test.
 
 ## Prioritized threats

@@ -17,22 +17,43 @@
 import { genkit } from 'genkit';
 import { enableFirebaseTelemetry } from '@genkit-ai/firebase';
 import { vertexAI } from '@genkit-ai/vertexai';
+import { getApps, initializeApp } from 'firebase-admin/app';
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  // ...
-  projectId: 'REPLACE_WITH_YOUR_PROJECT_ID',
-  // ...
-};
+const configuredProjectId =
+  process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT;
+const defaultApp = getApps().find((app) => app.name === '[DEFAULT]');
 
-export const getProjectId = () => firebaseConfig.projectId;
+if (defaultApp && configuredProjectId) {
+  const appProjectId = defaultApp.options.projectId;
+  if (!appProjectId) {
+    throw new Error(
+      'Set projectId on the existing default Firebase app to verify it matches the configured project.',
+    );
+  }
+  if (appProjectId !== configuredProjectId) {
+    throw new Error(
+      'The existing default Firebase app projectId differs from the configured project.',
+    );
+  }
+}
 
-enableFirebaseTelemetry({ projectId: getProjectId() });
+export const firebaseApp =
+  defaultApp ??
+  (configuredProjectId
+    ? initializeApp({ projectId: configuredProjectId })
+    : initializeApp());
+
+export const getProjectId = () => firebaseApp.options.projectId;
+
+const projectId = getProjectId();
+const projectOptions = projectId ? { projectId } : {};
+
+enableFirebaseTelemetry(projectOptions);
 
 export const ai = genkit({
   plugins: [
     vertexAI({
-      projectId: getProjectId(),
+      ...projectOptions,
       location: 'us-central1',
     }),
   ],
