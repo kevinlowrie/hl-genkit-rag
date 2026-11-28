@@ -47,7 +47,7 @@ export default function FormFields({}) {
         {/* Prompt input field */}
         <textarea
           name="request"
-          className="w-full resize-none text-foreground placeholder-gray-400 focus:outline-none h-[calc(100dvh-400px)] sm:h-[402px] bg-transparent"
+          className="w-full resize-none text-foreground placeholder-gray-400 focus:outline-hidden h-[calc(100dvh-400px)] sm:h-[402px] bg-transparent"
           placeholder="Write anything"
           required
           disabled={pending}
