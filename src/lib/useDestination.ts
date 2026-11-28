@@ -18,11 +18,11 @@
 
 import type { Destination } from './gemini/types';
 import { DESTINATION_LOCAL_STORAGE_KEY } from './constants';
-import { createLocalStorageStore } from './destinationStorage';
-
-const store = createLocalStorageStore<Destination>(DESTINATION_LOCAL_STORAGE_KEY);
+import { useDestinationStorage } from './destinationStorage';
 
 export default function useDestination() {
-  const destination = store.useValue();
-  return { destination, setDestination: store.setValue };
+  const [destination, setDestination] = useDestinationStorage<Destination>(
+    DESTINATION_LOCAL_STORAGE_KEY,
+  );
+  return { destination, setDestination };
 }

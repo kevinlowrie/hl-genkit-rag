@@ -1,53 +1,64 @@
-import { useMemo, useSyncExternalStore } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import type { SetStateAction } from 'react';
 
 type Value<T> = T | null | undefined;
 
-function parse<T>(raw: string | null | undefined): Value<T> {
-  if (raw == null) return raw;
+const unsavedSelections = new Map<string, unknown>();
+
+function readFromStorage<T>(key: string): Value<T> {
+  if (typeof window === 'undefined') return undefined;
+  if (unsavedSelections.has(key)) return unsavedSelections.get(key) as T | null;
   try {
-    return JSON.parse(raw);
+    const raw = window.localStorage.getItem(key);
+    return raw === null ? null : JSON.parse(raw);
   } catch {
     return null;
   }
 }
 
-export function createLocalStorageStore<T>(key: string) {
+function createStore<T>(key: string) {
+  // Read once per mount so another tab cannot replace an itinerary in use.
+  let value = readFromStorage<T>(key);
   const listeners = new Set<() => void>();
-  const getSnapshot = () => window.localStorage.getItem(key);
+  const getSnapshot = () => value;
   const getServerSnapshot = () => undefined;
 
   function subscribe(listener: () => void) {
     listeners.add(listener);
-    function onStorage(event: StorageEvent) {
-      if (
-        event.storageArea === window.localStorage &&
-        (event.key === key || event.key === null)
-      ) {
-        listener();
-      }
-    }
-    window.addEventListener('storage', onStorage);
     return () => {
       listeners.delete(listener);
-      window.removeEventListener('storage', onStorage);
     };
   }
 
-  function useValue(): Value<T> {
-    const raw = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-    return useMemo(() => parse<T>(raw), [raw]);
-  }
-
   function setValue(update: SetStateAction<Value<T>>) {
-    const value =
+    const next =
       typeof update === 'function'
-        ? (update as (previous: Value<T>) => Value<T>)(parse<T>(getSnapshot()))
+        ? (update as (previous: Value<T>) => Value<T>)(value)
         : update;
-    if (value === undefined) return;
-    window.localStorage.setItem(key, JSON.stringify(value));
+    if (Object.is(next, value)) return;
+
+    value = next;
+    if (next !== undefined && typeof window !== 'undefined') {
+      try {
+        window.localStorage.setItem(key, JSON.stringify(next));
+        unsavedSelections.delete(key);
+      } catch {
+        // A new page in this document can still use the unsaved selection.
+        unsavedSelections.set(key, next);
+      }
+    }
     for (const listener of listeners) listener();
   }
 
-  return { useValue, setValue };
+  return { subscribe, getSnapshot, getServerSnapshot, setValue };
+}
+
+export function useDestinationStorage<T>(key: string) {
+  const [store] = useState(() => createStore<T>(key));
+  const value = useSyncExternalStore(
+    store.subscribe,
+    store.getSnapshot,
+    store.getServerSnapshot,
+  );
+  return [value, store.setValue] as const;
 }
