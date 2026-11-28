@@ -43,7 +43,7 @@ export default function TiltedCardsAnimation() {
           className="object-cover w-full h-full bg-gray-200"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60" />
+        <div className="absolute inset-0 bg-linear-to-t/srgb from-black/60" />
       </div>
 
       <Image

@@ -75,7 +75,7 @@ export default function DatePicker({
               <button
                 key={day}
                 className={clsx(
-                  'relative flex items-center justify-center h-11 w-full min-h-11 flex-shrink-0 transition-colors before:transition-colors before:-z-10',
+                  'relative flex items-center justify-center h-11 w-full min-h-11 shrink-0 transition-colors before:transition-colors before:-z-10',
                   isFirstSelected(day) || isLastSelected(day)
                     ? 'bg-foreground text-background rounded-full before:bg-gray-100 before:h-11 before:w-full before:absolute before:inset-0'
                     : isDateSelected(day)

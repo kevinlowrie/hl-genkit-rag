@@ -15,21 +15,21 @@
  */
 
 import type { Metadata } from 'next';
-import './globals.scss';
+import './globals.css';
 import { Rubik, Lato } from 'next/font/google';
 
 const rubik = Rubik({
   subsets: ['latin'],
   weight: '500',
   display: 'swap',
-  variable: '--font-display',
+  variable: '--font-rubik',
 });
 
 const lato = Lato({
   subsets: ['latin'],
   weight: ['400', '700'],
   display: 'swap',
-  variable: '--font-sans',
+  variable: '--font-lato',
 });
 
 export const metadata: Metadata = {

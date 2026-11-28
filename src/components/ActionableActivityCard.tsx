@@ -46,7 +46,7 @@ const ActionableActivityCard = memo(function ActionableActivityCard({
           alt={name}
           height={500}
           width={500}
-          className="object-cover rounded-lg h-20 w-20 flex-shrink-0 bg-gray-200"
+          className="object-cover rounded-lg h-20 w-20 shrink-0 bg-gray-200"
         />
       }
 
