@@ -23,7 +23,7 @@ type Props = {
   size: 'sm' | 'lg';
 };
 
-const icon: { [tag in Tag]: () => JSX.Element } = {
+const icon: { [tag in Tag]: () => import('react').JSX.Element } = {
   Beach: Beach,
   City: City,
   Couples: Couples,
