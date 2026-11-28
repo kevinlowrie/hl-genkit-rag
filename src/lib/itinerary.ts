@@ -16,45 +16,62 @@
 
 'use server';
 
-import { ItineraryFlowOutput } from './genkit/types';
+import type { ItineraryFlowOutput } from './genkit/types';
 import { itineraryFlow } from './genkit/itineraryFlow';
+
+const MAX_IMAGE_COUNT = 3;
+// Next limits the entire multipart body to 5 MiB. Bound file bytes here too.
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+const IMAGE_MIME_TYPES = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/heic',
+  'image/heif',
+]);
 
 export async function generateItinerary(
   previousState: null | undefined | ItineraryFlowOutput,
   formData: FormData,
 ): Promise<ItineraryFlowOutput | undefined> {
   const request = formData.get('request');
-  if (!request) {
+  if (typeof request !== 'string' || !request) {
     throw new Error('No request provided');
   }
 
-  const images: File[] = formData.getAll('images[]') as File[]; // fix upload content-type
-  const imageUrls = await Promise.all(
-    images.filter((i) => i.size > 0).map(fileToDataURL),
-  );
+  const entries = formData.getAll('images[]');
+  if (entries.length > MAX_IMAGE_COUNT) {
+    throw new Error(`Upload at most ${MAX_IMAGE_COUNT} images`);
+  }
 
-  return await itineraryFlow({
-    request: request.toString(),
-    imageUrls,
-  });
+  const images: File[] = [];
+  let totalBytes = 0;
+  for (const file of entries) {
+    if (typeof file === 'string') {
+      throw new Error('Upload image files');
+    }
+    // A browser sends an unnamed, zero-byte File for an empty file input.
+    if (file.size === 0 && file.name === '') {
+      continue;
+    }
+    if (file.size === 0) {
+      throw new Error('An empty image cannot be uploaded');
+    }
+    if (!IMAGE_MIME_TYPES.has(file.type)) {
+      throw new Error('Unsupported image format');
+    }
+    totalBytes += file.size;
+    if (totalBytes > MAX_IMAGE_BYTES) {
+      throw new Error('Image uploads must be at most 5 MiB total');
+    }
+    images.push(file);
+  }
+
+  const imageUrls = await Promise.all(images.map(fileToDataURL));
+  return await itineraryFlow({ request, imageUrls });
 }
 
-export async function fileToDataURL(file: File): Promise<string> {
-  // 1. Get the file's content as an ArrayBuffer
-  // The .arrayBuffer() method is available on the File object, even on the server.
-  const arrayBuffer = await file.arrayBuffer();
-
-  // 2. Convert the ArrayBuffer to a Node.js Buffer
-  const buffer = Buffer.from(arrayBuffer);
-
-  // 3. Convert the Buffer to a Base64-encoded string
-  const base64 = buffer.toString('base64');
-
-  // 4. Get the MIME type from the File object
-  const mimeType = file.type;
-
-  // 5. Construct the Data URL
-  const dataURL = `data:${mimeType};base64,${base64}`;
-
-  return dataURL;
+async function fileToDataURL(file: File): Promise<string> {
+  const base64 = Buffer.from(await file.arrayBuffer()).toString('base64');
+  return `data:${file.type};base64,${base64}`;
 }
