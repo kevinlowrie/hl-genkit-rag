@@ -4,13 +4,13 @@ This is the code for [Build gen AI features powered by your data with Firebase G
 
 ## Getting Started
 
-First, update `src/lib/genkit/genkit.config.js` with your own Firebase project id and login using `gcloud auth application-default login`.
+First, update `src/lib/genkit/genkit.config.ts` with your own Firebase project id and login using `gcloud auth application-default login`.
 See [Genkit documentation](https://firebase.google.com/docs/genkit/plugins/vertex-ai) for more information.
 
-Then install the dependencies:
+Use Node.js 20.19 or later in the 20.x line, 22.13 or later in the 22.x line, or 24.x. Install the locked dependencies with
 
 ```bash
-npm install
+npm ci
 ```
 
 Then run Genkit UI standalone sandbox:
