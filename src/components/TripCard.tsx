@@ -41,7 +41,7 @@ export default function TripCard({
   return (
     <div
       className={clsx(
-        'cursor-pointer snap-start relative w-full h-full overflow-hidden animate-fade-in opacity-0 before:absolute before:bottom-0 before:rounded-2xl before:h-56 before:w-full before:bg-gradient-to-t before:from-black/40',
+        'cursor-pointer snap-start relative w-full h-full overflow-hidden animate-fade-in opacity-0 before:absolute before:bottom-0 before:rounded-2xl before:h-56 before:w-full before:bg-linear-to-t/srgb before:from-black/40',
         size === 'sm' ? '' : 'min-w-[352px]',
       )}
       onClick={onClick}

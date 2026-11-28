@@ -53,7 +53,7 @@ export default function ActivityCard({
         alt={name}
         height={100}
         width={100}
-        className="object-cover rounded-lg h-20 w-20 flex-shrink-0 bg-gray-200"
+        className="object-cover rounded-lg h-20 w-20 shrink-0 bg-gray-200"
       />
       {/* Date/time, activity name, and description */}
       <div className="w-full flex flex-col justify-between gap-1">

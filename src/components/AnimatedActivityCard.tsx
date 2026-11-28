@@ -71,7 +71,7 @@ export default function AnimatedActivityCard({
               height={100}
               width={100}
               className={clsx(
-                'object-cover rounded-lg flex-shrink-0 transition-all duration-[400ms] ease-in-out bg-gray-200',
+                'object-cover rounded-lg shrink-0 transition-all duration-[400ms] ease-in-out bg-gray-200',
                 activeIndex === index
                   ? 'w-20 h-20 opacity-100'
                   : 'w-0 h-0 opacity-0',
